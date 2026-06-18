@@ -3567,7 +3567,7 @@ if(Math.random() < 0.015){
         msg.quote = { text: quoted.text?.substring(0,50)||'[图片]', senderName: appData.myProfile.name, senderId: 'me', msgTime: quoted.time };
     }
 }
-    if(Math.random()<0.15) { const emojiPool = isGroup ? getGroupEmojiPool() : getAllUserEmojis(chatId); if(emojiPool.length) { const em = emojiPool[Math.floor(Math.random()*emojiPool.length)]; const testImg = new Image(); testImg.onload = () => { msg.image = em; msg.text = ''; addMessage(chatId,msg); }; testImg.onerror = () => { msg.text = text; addMessage(chatId,msg); }; testImg.src = em; return; } } 
+    if(Math.random()<0.15) { const emojiPool = isGroup ? getGroupEmojiPool() : getAllUserEmojis(chatId); if(emojiPool.length) { const em = emojiPool[Math.floor(Math.random()*emojiPool.length)]; const testImg = new Image(); testImg.onload = () => { msg.image = em; msg.text = ''; addMessage(chatId,msg); }; testImg.onerror = () => { msg.text = text || '嗯嗯'; msg.image = null; addMessage(chatId,msg); };testImg.src = em; return; } } 
     if(isGroup && target.members.length>1){ const mems = target.members.filter(m=>m!=='me'); if(mems.length){ const r = getContact(mems[Math.floor(Math.random()*mems.length)]); if(r){ msg.senderName=r.name; msg.senderAvt=r.avt; msg.senderId=r.id; } } } 
     addMessage(chatId, msg); 
 }
