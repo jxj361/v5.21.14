@@ -1789,7 +1789,13 @@ function renderQuotePreview(){ const container = document.getElementById('quoteP
 function renderMessages() {
   const c = document.getElementById('chatMessages');
   while (c.firstChild) c.removeChild(c.firstChild);
-  (appData.msg[currentChatId] || []).forEach(m => appendMessageToChat(m));
+  (appData.msg[currentChatId] || []).forEach(m => {
+    // 跳过以 data:image 或 data:audio 开头的乱码文字消息
+    if (m.text && (m.text.startsWith('data:image/') || m.text.startsWith('data:audio/'))) {
+      return;
+    }
+    appendMessageToChat(m);
+  });
   ensureChatOverlay();
   c.scrollTop = c.scrollHeight;
   // 二次保险：等图片和语音渲染完再滚一次
@@ -3472,8 +3478,10 @@ function execReply(chatId, target, isGroup, pool){
         }
       }
     }
-    text = sanitizeText(text) || '嗯嗯';
-    
+    // 防止图片 base64 被当作文字回复
+    if (text.startsWith('data:image/') || text.startsWith('data:audio/')) {
+      text = '嗯嗯';
+    }
     // 点歌
 if(Math.random() < 0.015){
     const allSongs = appData.musicPlaylists.flatMap(p => p.songs);
